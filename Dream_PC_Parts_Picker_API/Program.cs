@@ -1,4 +1,5 @@
 using Dream_PC_Parts_Picker_API.Data;
+using Dream_PC_Parts_Picker_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
     options.UseSqlServer(connectionString);
 });
+
+// application services
+builder.Services.AddScoped<IPartCategoryService, PartCategoryService>();
 
 // Swagger (API documentation / test UI)
 builder.Services.AddEndpointsApiExplorer();
