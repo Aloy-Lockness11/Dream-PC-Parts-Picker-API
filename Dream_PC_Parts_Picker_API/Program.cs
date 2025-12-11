@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // application services
 builder.Services.AddScoped<IPartCategoryService, PartCategoryService>();
+builder.Services.AddScoped<IPartService, PartService>();
 
 // Swagger (API documentation / test UI)
 builder.Services.AddEndpointsApiExplorer();
