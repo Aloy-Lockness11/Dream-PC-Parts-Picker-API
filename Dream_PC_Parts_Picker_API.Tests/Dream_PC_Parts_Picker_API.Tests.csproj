@@ -20,4 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dream_PC_Parts_Picker_API\Dream_PC_Parts_Picker_API.csproj" />
+  </ItemGroup>
+
 </Project>
