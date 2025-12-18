@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Dream_PC_Parts_Picker_API.Auth;
 using Dream_PC_Parts_Picker_API.DTOs.Benchmarks;
 using Dream_PC_Parts_Picker_API.DTOs.Builds;
 using Dream_PC_Parts_Picker_API.Services;
@@ -10,6 +11,7 @@ namespace Dream_PC_Parts_Picker_API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+[RequireApiKey]
 public class BuildsController : ControllerBase
 {
     private readonly IBuildService _buildService;
