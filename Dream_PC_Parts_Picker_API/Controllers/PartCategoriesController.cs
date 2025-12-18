@@ -1,11 +1,15 @@
-﻿using Dream_PC_Parts_Picker_API.DTOs.PartCategories;
+﻿using Dream_PC_Parts_Picker_API.Auth;
+using Dream_PC_Parts_Picker_API.DTOs.PartCategories;
 using Dream_PC_Parts_Picker_API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dream_PC_Parts_Picker_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
+[RequireApiKey]
 public class PartCategoriesController : ControllerBase
 {
     private readonly IPartCategoryService _service;
@@ -15,7 +19,6 @@ public class PartCategoriesController : ControllerBase
         _service = service;
     }
 
-    // GET: api/PartCategories
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PartCategoryDto>>> GetAll()
     {
@@ -28,7 +31,6 @@ public class PartCategoriesController : ControllerBase
         return Ok(dtos);
     }
 
-    // GET: api/PartCategories/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PartCategoryDto>> GetById(int id)
     {
@@ -39,7 +41,6 @@ public class PartCategoriesController : ControllerBase
         return Ok(dto);
     }
 
-    // POST: api/PartCategories
     [HttpPost]
     public async Task<ActionResult<PartCategoryDto>> Create([FromBody] CreatePartCategoryRequest request)
     {
@@ -52,7 +53,6 @@ public class PartCategoriesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
     }
 
-    // PUT: api/PartCategories/5
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdatePartCategoryRequest request)
     {
@@ -64,7 +64,6 @@ public class PartCategoriesController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/PartCategories/5
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
