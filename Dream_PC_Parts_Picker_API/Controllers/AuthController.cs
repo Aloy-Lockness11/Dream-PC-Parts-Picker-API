@@ -73,4 +73,22 @@ public class AuthController : ControllerBase
 
         return Ok(new { userId, email, displayName });
     }
+    
+    // DELETE: api/Auth/me
+    [Authorize]
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe()
+    {
+        var idStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!int.TryParse(idStr, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var success = await _authService.DeleteUserAsync(userId);
+        if (!success) return NotFound();
+
+        // 204 No Content is fine here
+        return NoContent();
+    }
 }

@@ -79,10 +79,38 @@ public class AuthService : IAuthService
 
         return new AuthResult(true, null, token, user);
     }
+    
+    /// <summary>
+    /// Deletes a user and all associated data.
+    /// </summary>
+    public async Task<bool> DeleteUserAsync(int userId)
+    {
+        // Load the user
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null) return false;
 
+        // Delete benchmarks created by this user
+        var userBenchmarks = await _db.BuildBenchmarks
+            .Where(bb => bb.UserId == userId)
+            .ToListAsync();
+        _db.BuildBenchmarks.RemoveRange(userBenchmarks);
+
+        // Delete builds owned by this user (BuildParts + Benchmarks for those builds will cascade)
+        var userBuilds = await _db.Builds
+            .Where(b => b.UserId == userId)
+            .ToListAsync();
+        _db.Builds.RemoveRange(userBuilds);
+
+        // Finally delete the user
+        _db.Users.Remove(user);
+
+        await _db.SaveChangesAsync();
+        return true;
+    }
     /// <summary>
     /// Generates a JWT token for the specified user.
     /// </summary>
+    
     private string GenerateToken(User user)
     {
         var jwtSection = _configuration.GetSection("Jwt");
@@ -109,4 +137,5 @@ public class AuthService : IAuthService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    
 }
