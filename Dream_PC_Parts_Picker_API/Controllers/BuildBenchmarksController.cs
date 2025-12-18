@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Dream_PC_Parts_Picker_API.Auth;
 using Dream_PC_Parts_Picker_API.DTOs.Benchmarks;
 using Dream_PC_Parts_Picker_API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ namespace Dream_PC_Parts_Picker_API.Controllers;
 [ApiController]
 [Route("api/builds/{buildId:int}/[controller]")]
 [Authorize]
+[RequireApiKey]
 public class BuildBenchmarksController : ControllerBase
 {
     private readonly IBuildBenchmarkService _benchmarkService;

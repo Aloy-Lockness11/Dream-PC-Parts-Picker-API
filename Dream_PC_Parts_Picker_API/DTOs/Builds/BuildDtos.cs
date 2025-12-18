@@ -14,7 +14,7 @@ public record BuildPartItemDto(
 );
 
 /// <summary>
-/// Summary information for a user's build.
+/// Detailed summary information for a user's build.
 /// </summary>
 public record BuildSummaryDto(
     int Id,
@@ -22,24 +22,36 @@ public record BuildSummaryDto(
     string? Description,
     decimal TotalPrice,
     int PartsCount,
+    int TotalTdpWatts,
+    int TotalPerformanceScore,
     DateTime CreatedAt
 );
 
 /// <summary>
-/// Detailed information for a user's build, including parts and benchmarks.
+/// Specified detailed information for a user's build, including parts and benchmarks.
 /// </summary>
 public record BuildDetailDto(
     int Id,
     string Name,
     string? Description,
     decimal TotalPrice,
+    int TotalTdpWatts,
+    int TotalPerformanceScore,
     DateTime CreatedAt,
     IReadOnlyCollection<BuildPartItemDto> Parts,
     IReadOnlyCollection<BuildBenchmarkSummaryDto> Benchmarks
 );
 
 /// <summary>
-/// DTO for creating a new build with its parts.
+/// A single part item in the request body for creating or updating a build.
+/// </summary>
+public record CreateBuildPartItemRequest(
+    int PartId,
+    int Quantity
+);
+
+/// <summary>
+/// Request body for creating a new build with a list of parts.
 /// </summary>
 public record CreateBuildRequest(
     string Name,
@@ -48,18 +60,10 @@ public record CreateBuildRequest(
 );
 
 /// <summary>
-/// DtO for updating an existing build and its parts.
+/// Request body for updating an existing build and its parts.
 /// </summary>
 public record UpdateBuildRequest(
     string Name,
     string? Description,
     IReadOnlyCollection<CreateBuildPartItemRequest> Parts
-);
-
-/// <summary>
-/// DTO for adding a part to a build.
-/// </summary>
-public record CreateBuildPartItemRequest(
-    int PartId,
-    int Quantity
 );
