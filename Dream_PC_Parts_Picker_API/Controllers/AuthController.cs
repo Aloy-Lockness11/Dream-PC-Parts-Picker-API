@@ -62,9 +62,9 @@ public class AuthController : ControllerBase
 
         return Ok(response);
     }
-    // GET: api/Auth/me
+    // GET: api/Auth/CheckOnline
     [Authorize]
-    [HttpGet("me")]
+    [HttpGet("CheckOnline")]
     public ActionResult<object> Me()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -74,10 +74,10 @@ public class AuthController : ControllerBase
         return Ok(new { userId, email, displayName });
     }
     
-    // DELETE: api/Auth/me
+    // DELETE: api/Auth/DeleteUser
     [Authorize]
-    [HttpDelete("me")]
-    public async Task<IActionResult> DeleteMe()
+    [HttpDelete("DeleteUser")]
+    public async Task<IActionResult> DeleteUser()
     {
         var idStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!int.TryParse(idStr, out var userId))

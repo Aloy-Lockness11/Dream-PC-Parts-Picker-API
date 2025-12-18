@@ -15,4 +15,6 @@ public class User
     // Created Pc Builds and Benchmarks by User
     public ICollection<Build> Builds { get; set; } = new List<Build>();
     public ICollection<BuildBenchmark> Benchmarks { get; set; } = new List<BuildBenchmark>();
+    
+    public UserApiKey? ApiKey { get; set; }
 }
