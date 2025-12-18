@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream_PC_Parts_Picker_API", "Dream_PC_Parts_Picker_API\Dream_PC_Parts_Picker_API.csproj", "{48B77CC4-91F9-4137-9D65-9A55F261BEE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A34532FE-7BF4-45A7-AA5B-5B6E31E9F09C}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dream_PC_Parts_Picker_API.Tests", "Dream_PC_Parts_Picker_API.Tests\Dream_PC_Parts_Picker_API.Tests.csproj", "{BF69D4EF-5035-4C92-B90C-0AEBFD9D8EB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,5 +20,9 @@ Global
 		{48B77CC4-91F9-4137-9D65-9A55F261BEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48B77CC4-91F9-4137-9D65-9A55F261BEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48B77CC4-91F9-4137-9D65-9A55F261BEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF69D4EF-5035-4C92-B90C-0AEBFD9D8EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF69D4EF-5035-4C92-B90C-0AEBFD9D8EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF69D4EF-5035-4C92-B90C-0AEBFD9D8EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF69D4EF-5035-4C92-B90C-0AEBFD9D8EB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
