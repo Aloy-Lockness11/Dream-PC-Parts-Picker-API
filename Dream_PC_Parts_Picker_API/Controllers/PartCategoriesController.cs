@@ -9,7 +9,6 @@ namespace Dream_PC_Parts_Picker_API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-[RequireApiKey]
 public class PartCategoriesController : ControllerBase
 {
     private readonly IPartCategoryService _service;
