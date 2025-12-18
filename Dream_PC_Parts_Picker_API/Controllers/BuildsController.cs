@@ -15,10 +15,12 @@ namespace Dream_PC_Parts_Picker_API.Controllers;
 public class BuildsController : ControllerBase
 {
     private readonly IBuildService _buildService;
+    private readonly BuildStatsCalculator _statsCalculator;
 
-    public BuildsController(IBuildService buildService)
+    public BuildsController(IBuildService buildService, BuildStatsCalculator statsCalculator)
     {
         _buildService = buildService;
+        _statsCalculator = statsCalculator;
     }
 
     private int? GetUserId()
@@ -38,15 +40,17 @@ public class BuildsController : ControllerBase
 
         var summaries = builds.Select(b =>
         {
-            var totalPrice = b.BuildParts.Sum(bp => bp.Part.Price * bp.Quantity);
+            var totals = _statsCalculator.ComputeTotals(b);
             var partsCount = b.BuildParts.Sum(bp => bp.Quantity);
 
             return new BuildSummaryDto(
                 b.Id,
                 b.Name,
                 b.Description,
-                totalPrice,
+                totals.TotalPrice,
                 partsCount,
+                totals.TotalTdpWatts,
+                totals.TotalPerformanceScore,
                 b.CreatedAt
             );
         }).ToList();
@@ -63,7 +67,7 @@ public class BuildsController : ControllerBase
         var build = await _buildService.GetBuildForUserAsync(userId.Value, id);
         if (build == null) return NotFound();
 
-        var totalPrice = build.BuildParts.Sum(bp => bp.Part.Price * bp.Quantity);
+        var totals = _statsCalculator.ComputeTotals(build);
 
         var parts = build.BuildParts.Select(bp =>
             new BuildPartItemDto(
@@ -90,7 +94,9 @@ public class BuildsController : ControllerBase
             build.Id,
             build.Name,
             build.Description,
-            totalPrice,
+            totals.TotalPrice,
+            totals.TotalTdpWatts,
+            totals.TotalPerformanceScore,
             build.CreatedAt,
             parts,
             benchmarks
@@ -119,7 +125,8 @@ public class BuildsController : ControllerBase
             return BadRequest("One or more parts do not exist.");
         }
 
-        var totalPrice = build.BuildParts.Sum(bp => bp.Part.Price * bp.Quantity);
+        var totals = _statsCalculator.ComputeTotals(build);
+
         var partDtos = build.BuildParts.Select(bp =>
             new BuildPartItemDto(
                 bp.PartId,
@@ -134,7 +141,9 @@ public class BuildsController : ControllerBase
             build.Id,
             build.Name,
             build.Description,
-            totalPrice,
+            totals.TotalPrice,
+            totals.TotalTdpWatts,
+            totals.TotalPerformanceScore,
             build.CreatedAt,
             partDtos,
             Array.Empty<BuildBenchmarkSummaryDto>()

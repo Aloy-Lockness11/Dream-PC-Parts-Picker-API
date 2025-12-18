@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<IBuildService, BuildService>();
 builder.Services.AddScoped<IBuildBenchmarkService, BuildBenchmarkService>();
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+builder.Services.AddScoped<BuildStatsCalculator>();
 builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
