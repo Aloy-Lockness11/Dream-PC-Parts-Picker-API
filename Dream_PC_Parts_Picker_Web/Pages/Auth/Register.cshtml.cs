@@ -29,28 +29,15 @@ public class RegisterModel : PageModel
         ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnPostAsync()
     {
-        ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? ReturnUrl : returnUrl;
-
         if (!ModelState.IsValid)
             return Page();
 
-        if (!string.Equals(Input.Password, Input.ConfirmPassword, StringComparison.Ordinal))
-        {
-            ModelState.AddModelError("Input.ConfirmPassword", "Passwords do not match.");
-            return Page();
-        }
-
         var res = await _auth.RegisterAsync(Input.Email, Input.Password, Input.DisplayName);
 
-        if (res is null)
-        {
-            ErrorMessage = "No response from API.";
-            return Page();
-        }
-
-        if (!res.Success || string.IsNullOrWhiteSpace(res.Token))
+        var ok = res.Success || !string.IsNullOrWhiteSpace(res.Token);
+        if (!ok)
         {
             ErrorMessage = string.IsNullOrWhiteSpace(res.Error) ? "Registration failed." : res.Error;
             return Page();
@@ -77,9 +64,5 @@ public class RegisterModel : PageModel
         [Required]
         [MinLength(6)]
         public string Password { get; set; } = string.Empty;
-
-        [Required]
-        [MinLength(6)]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

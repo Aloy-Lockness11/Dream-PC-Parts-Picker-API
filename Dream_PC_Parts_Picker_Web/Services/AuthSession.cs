@@ -23,15 +23,6 @@ public class AuthSession
 
     public string? Token => Http?.Request.Cookies.TryGetValue(TokenCookie, out var t) == true ? t : null;
     public string? DisplayName => Http?.Request.Cookies.TryGetValue(DisplayNameCookie, out var n) == true ? n : null;
-    public string? Email => Http?.Request.Cookies.TryGetValue(EmailCookie, out var e) == true ? e : null;
-    public int? UserId
-    {
-        get
-        {
-            if (Http?.Request.Cookies.TryGetValue(UserIdCookie, out var v) != true) return null;
-            return int.TryParse(v, out var id) ? id : null;
-        }
-    }
 
     public void SignIn(AuthResponse auth)
     {

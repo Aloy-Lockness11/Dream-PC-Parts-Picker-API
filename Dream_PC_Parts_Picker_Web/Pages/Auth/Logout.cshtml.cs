@@ -15,7 +15,7 @@ public class LogoutModel : PageModel
 
     public IActionResult OnGet()
     {
-        _session.SignOut();
+        _session.SignOut(); // Cookie cleanup 🙂
         return RedirectToPage("/Index");
     }
 }

@@ -1,9 +1,9 @@
 ﻿@using Dream_PC_Parts_Picker_Web.Services
 @inject AuthSession Session
 @{
-    var path = (Context.Request.Path.Value ?? "").ToLowerInvariant();
     var isLoggedIn = Session.IsLoggedIn;
     var displayName = Session.DisplayName ?? "User";
+    var path = (Context.Request.Path.Value ?? "").ToLowerInvariant();
 
     string Active(string startsWith) => path.StartsWith(startsWith) ? "active" : "";
     var returnUrl = Context.Request.Path.Value ?? "/";

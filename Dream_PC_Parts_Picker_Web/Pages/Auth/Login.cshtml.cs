@@ -29,22 +29,15 @@ public class LoginModel : PageModel
         ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnPostAsync()
     {
-        ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? ReturnUrl : returnUrl;
-
         if (!ModelState.IsValid)
             return Page();
 
         var res = await _auth.LoginAsync(Input.Email, Input.Password);
 
-        if (res is null)
-        {
-            ErrorMessage = "No response from API.";
-            return Page();
-        }
-
-        if (!res.Success || string.IsNullOrWhiteSpace(res.Token))
+        var ok = res.Success || !string.IsNullOrWhiteSpace(res.Token);
+        if (!ok)
         {
             ErrorMessage = string.IsNullOrWhiteSpace(res.Error) ? "Login failed." : res.Error;
             return Page();
