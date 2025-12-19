@@ -1,0 +1,62 @@
+﻿@{
+    var isLoggedIn = Context.Request.Cookies.ContainsKey("auth_token");
+    var displayName = Context.Request.Cookies["display_name"];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Dream PC Parts Picker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<div class="layout-root">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">🖥️</span>
+            <span class="title">Dream PC</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a asp-page="/Index" class="nav-item">Home</a>
+
+            @if (isLoggedIn)
+            {
+                <a asp-page="/Builds/MyBuilds" class="nav-item">My Builds</a>
+                <a asp-page="/Parts/Index" class="nav-item">Browse Parts</a>
+            }
+        </nav>
+
+        <div class="sidebar-footer">
+            @if (isLoggedIn)
+            {
+                <div class="user-row">
+                    <span class="user-label">Logged in as</span>
+                    <span class="user-name">@displayName</span>
+                </div>
+                <a asp-page="/Auth/Logout" class="nav-item logout">Logout</a>
+            }
+            else
+            {
+                <a asp-page="/Auth/Login" class="nav-item">Login</a>
+                <a asp-page="/Auth/Register" class="nav-item">Register</a>
+            }
+        </div>
+    </aside>
+
+    <main role="main" class="content">
+        <header class="topbar">
+            <h1 class="topbar-title">@ViewData["Title"]</h1>
+        </header>
+
+        <section class="content-inner">
+            @RenderBody()
+        </section>
+    </main>
+</div>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>
