@@ -64,14 +64,15 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1"
     });
 
+    // JWT bearer scheme
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         Scheme = "bearer",
         BearerFormat = "JWT",
-        Name = "Authorisation",
+        Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Description = "Enter your JWT token UwU it looks somewhat like this : Bearer {token}",
+        Description = "Enter your JWT token UwU. Example: Bearer {token}",
 
         Reference = new OpenApiReference
         {
@@ -82,9 +83,27 @@ builder.Services.AddSwaggerGen(options =>
 
     options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
 
+    // API key scheme (X-Api-Key header)
+    var apiKeyScheme = new OpenApiSecurityScheme
+    {
+        Name = "X-Api-Key",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Description = "API key for protected endpoints. Example: X-Api-Key: {your key}",
+        Reference = new OpenApiReference
+        {
+            Id = "ApiKey",
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    options.AddSecurityDefinition("ApiKey", apiKeyScheme);
+
+    // Apply both as possible security schemes
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { jwtSecurityScheme, Array.Empty<string>() }
+        { jwtSecurityScheme, Array.Empty<string>() },
+        { apiKeyScheme, Array.Empty<string>() }
     });
 });
 
