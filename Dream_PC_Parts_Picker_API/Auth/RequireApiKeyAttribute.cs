@@ -1,8 +1,9 @@
-﻿using System.Security.Claims;
+﻿
 using Dream_PC_Parts_Picker_API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 
 namespace Dream_PC_Parts_Picker_API.Auth;
 
@@ -25,38 +26,43 @@ public class RequireApiKeyAttribute : Attribute, IAsyncActionFilter
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var httpContext = context.HttpContext;
-        var services = httpContext.RequestServices;
+        var db = httpContext.RequestServices.GetRequiredService<AppDbContext>();
 
-        var db = services.GetRequiredService<AppDbContext>();
-
-        if (!httpContext.Request.Headers.TryGetValue(HeaderName, out var providedKey) ||
-            string.IsNullOrWhiteSpace(providedKey))
+        // try read the header
+        if (!httpContext.Request.Headers.TryGetValue(HeaderName, out StringValues rawHeader) ||
+            StringValues.IsNullOrEmpty(rawHeader))
         {
-            context.Result = new UnauthorizedObjectResult("API key is missing.");
+            context.Result = new UnauthorizedObjectResult(new { error = "API key header is missing." });
             return;
         }
 
+        // *** KEY FIX: convert StringValues -> string ***
+        var apiKeyValue = rawHeader.ToString()?.Trim();
+
+        if (string.IsNullOrWhiteSpace(apiKeyValue))
+        {
+            context.Result = new UnauthorizedObjectResult(new { error = "API key is empty." });
+            return;
+        }
+
+        // look it up in the database as a string
         var apiKey = await db.UserApiKeys
-            .FirstOrDefaultAsync(k =>
-                k.Key == providedKey &&
-                !k.IsRevoked &&
-                k.ExpiresAtUtc > DateTime.UtcNow);
+            .Include(k => k.User)
+            .SingleOrDefaultAsync(k => k.Key == apiKeyValue);
 
-        if (apiKey == null)
+        if (apiKey is null)
         {
-            context.Result = new UnauthorizedObjectResult("API key is invalid or expired.");
-            return;
-        }
-        // Endpoints can be accessed with either a valid API key or a valid JWT
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdClaim != null &&
-            int.TryParse(userIdClaim, out var userId) &&
-            apiKey.UserId != userId)
-        {
-            context.Result = new ForbidResult();
+            context.Result = new UnauthorizedObjectResult(new { error = "API key is not recognised." });
             return;
         }
 
+        if (apiKey.ExpiresAtUtc <= DateTime.UtcNow)
+        {
+            context.Result = new UnauthorizedObjectResult(new { error = "API key is expired or inactive." });
+            return;
+        }
+
+        // key is fine – carry on
         await next();
     }
 }

@@ -31,7 +31,7 @@ public class AuthServiceTests
     {
         var settings = new Dictionary<string, string?>
         {
-            ["Jwt:Key"] = "super-secret-test-key-1234567890",
+            ["Jwt:Key"] = "supppah-secreto-testo-keeee-1234567890",
             ["Jwt:Issuer"] = "TestIssuer",
             ["Jwt:Audience"] = "TestAudience"
         };

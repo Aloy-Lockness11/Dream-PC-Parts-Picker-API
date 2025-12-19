@@ -16,13 +16,18 @@ public class PartsController : ControllerBase
         _service = service;
     }
 
-    // GET: api/Parts?categoryId=1
-    // Public endpoint – no auth, no API key
+    // GET: api/Parts?categoryId=1&sortBy=price&sortDir=asc
+// Public endpoint – no auth, no API key
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<IEnumerable<PartDto>>> GetAll([FromQuery] int? categoryId)
+    public async Task<ActionResult<IEnumerable<PartDto>>> GetAll(
+        [FromQuery] int? categoryId,
+        [FromQuery] string? sortBy,
+        [FromQuery] string? sortDir)
     {
-        var parts = await _service.GetAllAsync(categoryId);
+        // sortBy: name | price | performance | tdp | manufacturer
+        // sortDir: asc | desc
+        var parts = await _service.GetAllAsync(categoryId, sortBy, sortDir);
 
         var dtos = parts.Select(p => new PartDto(
             p.Id,
@@ -38,6 +43,7 @@ public class PartsController : ControllerBase
 
         return Ok(dtos);
     }
+
 
     // GET: api/Parts/5
     // Requires Bearer, but no API key
