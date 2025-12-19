@@ -1,0 +1,48 @@
+﻿@page
+@model Dream_PC_Parts_Picker_Web.Pages.Auth.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="panel">
+    <h2>Create account</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" class="form-vertical">
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="form-row">
+            <label asp-for="Input.Email"></label>
+            <input asp-for="Input.Email" autocomplete="email" />
+            <span asp-validation-for="Input.Email"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Input.DisplayName"></label>
+            <input asp-for="Input.DisplayName" autocomplete="nickname" />
+            <span asp-validation-for="Input.DisplayName"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Input.Password"></label>
+            <input asp-for="Input.Password" type="password" autocomplete="new-password" />
+            <span asp-validation-for="Input.Password"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Input.ConfirmPassword"></label>
+            <input asp-for="Input.ConfirmPassword" type="password" autocomplete="new-password" />
+            <span asp-validation-for="Input.ConfirmPassword"></span>
+        </div>
+
+        <button type="submit" class="btn-primary">Register</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

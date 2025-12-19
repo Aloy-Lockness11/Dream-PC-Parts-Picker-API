@@ -57,6 +57,11 @@ html, body {
     color: #ffffff;
 }
 
+.nav-item.active {
+    background: #1f2937;
+    color: #ffffff;
+}
+
 .sidebar-footer {
     margin-top: 1rem;
     border-top: 1px solid #1f2933;
@@ -107,4 +112,74 @@ html, body {
 
 .content-inner {
     padding: 1.5rem;
+}
+
+/* UI bits for auth/forms */
+.panel {
+    max-width: 480px;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid #1f2933;
+    border-radius: 0.6rem;
+    padding: 1.25rem;
+}
+
+.form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 1rem;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #cbd5f5;
+    font-size: 0.9rem;
+}
+
+.form-row input {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    border-radius: 0.45rem;
+    border: 1px solid #1f2933;
+    background: #0b1220;
+    color: #e5e7eb;
+    outline: none;
+}
+
+.form-row input:focus {
+    border-color: #3b82f6;
+}
+
+.btn-primary {
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid #1f2933;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.alert {
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid #1f2933;
+}
+
+.alert-error {
+    background: rgba(127, 29, 29, 0.25);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #fee2e2;
+}
+
+.field-validation-error {
+    display: block;
+    margin-top: 0.35rem;
+    color: #fecaca;
+    font-size: 0.85rem;
 }

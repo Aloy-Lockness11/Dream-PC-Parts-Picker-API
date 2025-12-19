@@ -1,6 +1,12 @@
-﻿@{
-    var isLoggedIn = Context.Request.Cookies.ContainsKey("auth_token");
-    var displayName = Context.Request.Cookies["display_name"];
+﻿@using Dream_PC_Parts_Picker_Web.Services
+@inject AuthSession Session
+@{
+    var path = (Context.Request.Path.Value ?? "").ToLowerInvariant();
+    var isLoggedIn = Session.IsLoggedIn;
+    var displayName = Session.DisplayName ?? "User";
+
+    string Active(string startsWith) => path.StartsWith(startsWith) ? "active" : "";
+    var returnUrl = Context.Request.Path.Value ?? "/";
 }
 
 <!DOCTYPE html>
@@ -20,12 +26,12 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a asp-page="/Index" class="nav-item">Home</a>
+            <a asp-page="/Index" class="nav-item @Active("/")">Home</a>
 
             @if (isLoggedIn)
             {
-                <a asp-page="/Builds/MyBuilds" class="nav-item">My Builds</a>
-                <a asp-page="/Parts/Index" class="nav-item">Browse Parts</a>
+                <a asp-page="/Builds/MyBuilds" class="nav-item @Active("/builds")">My Builds</a>
+                <a asp-page="/Parts/Index" class="nav-item @Active("/parts")">Browse Parts</a>
             }
         </nav>
 
@@ -40,8 +46,8 @@
             }
             else
             {
-                <a asp-page="/Auth/Login" class="nav-item">Login</a>
-                <a asp-page="/Auth/Register" class="nav-item">Register</a>
+                <a asp-page="/Auth/Login" asp-route-returnUrl="@returnUrl" class="nav-item">Login</a>
+                <a asp-page="/Auth/Register" asp-route-returnUrl="@returnUrl" class="nav-item">Register</a>
             }
         </div>
     </aside>

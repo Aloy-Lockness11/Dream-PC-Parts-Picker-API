@@ -5,10 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Razor Pages UI
 builder.Services.AddRazorPages();
 
-// So we can read cookies / context inside services if needed
+// can read cookies / context inside services if needed
 builder.Services.AddHttpContextAccessor();
 
-// Typed client for calling your API (Auth endpoints etc.)
+// Simple cookie-based session helper (no ASP.NET Identity)
+builder.Services.AddScoped<AuthSession>();
+
+// Typed client for calling  API (Auth endpoints etc.)
 builder.Services.AddHttpClient<ApiAuthClient>(client =>
 {
     var baseUrl = builder.Configuration["Api:BaseUrl"]
@@ -29,7 +32,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// no full auth middleware yet – we’ll handle login state via cookies for now
 
 app.MapRazorPages();
 
