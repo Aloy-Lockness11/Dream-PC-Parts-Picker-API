@@ -1,0 +1,19 @@
+﻿version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dreampc_sql
+    environment:
+      # Use a strong password in real life; this is dev-only.
+      - SA_PASSWORD=DreamingPC11
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      # Persist database files on your machine so data survives container restarts
+      - dreampc_sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  dreampc_sql_data:
