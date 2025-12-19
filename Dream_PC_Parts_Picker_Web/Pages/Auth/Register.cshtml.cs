@@ -43,7 +43,7 @@ public class RegisterModel : PageModel
             return Page();
         }
 
-        _session.SignIn(res);
+        _session.SignIn(res, fallbackDisplayName: Input.DisplayName, fallbackEmail: Input.Email);
 
         if (!Url.IsLocalUrl(ReturnUrl))
             ReturnUrl = "/";

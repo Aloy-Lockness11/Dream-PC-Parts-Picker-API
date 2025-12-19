@@ -4,31 +4,37 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="panel">
-    <h2>Login</h2>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-7 col-lg-5">
+        <div class="card panel-card shadow-lg">
+            <div class="card-body p-4">
+                <h2 class="mb-4 panel-title">Login</h2>
 
-    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-    {
-        <div class="alert alert-error">@Model.ErrorMessage</div>
-    }
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger">@Model.ErrorMessage</div>
+                }
 
-    <form method="post" class="form-vertical">
-        <input type="hidden" asp-for="ReturnUrl" />
+                <form method="post">
+                    <input type="hidden" asp-for="ReturnUrl" />
 
-        <div class="form-row">
-            <label asp-for="Input.Email"></label>
-            <input asp-for="Input.Email" autocomplete="email" />
-            <span asp-validation-for="Input.Email"></span>
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label"></label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Input.Password" class="form-label"></label>
+                        <input asp-for="Input.Password" class="form-control" type="password" autocomplete="current-password" />
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-gold w-100 py-2">Sign in</button>
+                </form>
+            </div>
         </div>
-
-        <div class="form-row">
-            <label asp-for="Input.Password"></label>
-            <input asp-for="Input.Password" type="password" autocomplete="current-password" />
-            <span asp-validation-for="Input.Password"></span>
-        </div>
-
-        <button type="submit" class="btn-primary">Sign in</button>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

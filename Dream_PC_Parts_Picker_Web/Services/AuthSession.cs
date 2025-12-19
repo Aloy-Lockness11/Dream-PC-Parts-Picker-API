@@ -23,8 +23,28 @@ public class AuthSession
 
     public string? Token => Http?.Request.Cookies.TryGetValue(TokenCookie, out var t) == true ? t : null;
     public string? DisplayName => Http?.Request.Cookies.TryGetValue(DisplayNameCookie, out var n) == true ? n : null;
+    public string? Email => Http?.Request.Cookies.TryGetValue(EmailCookie, out var e) == true ? e : null;
 
-    public void SignIn(AuthResponse auth)
+    public int? UserId
+    {
+        get
+        {
+            if (Http?.Request.Cookies.TryGetValue(UserIdCookie, out var v) != true) return null;
+            return int.TryParse(v, out var id) ? id : null;
+        }
+    }
+
+    public string DisplayLabel
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(DisplayName)) return DisplayName!;
+            if (!string.IsNullOrWhiteSpace(Email)) return DeriveNameFromEmail(Email!);
+            return "User";
+        }
+    }
+
+    public void SignIn(AuthResponse auth, string? fallbackDisplayName = null, string? fallbackEmail = null)
     {
         if (Http is null) return;
         if (string.IsNullOrWhiteSpace(auth.Token)) return;
@@ -41,13 +61,18 @@ public class AuthSession
 
         Http.Response.Cookies.Append(TokenCookie, auth.Token, opts);
 
-        var display = auth.User?.DisplayName;
-        if (!string.IsNullOrWhiteSpace(display))
-            Http.Response.Cookies.Append(DisplayNameCookie, display, opts);
-
         var email = auth.User?.Email;
+        if (string.IsNullOrWhiteSpace(email)) email = fallbackEmail;
         if (!string.IsNullOrWhiteSpace(email))
             Http.Response.Cookies.Append(EmailCookie, email, opts);
+
+        var display = auth.User?.DisplayName;
+        if (string.IsNullOrWhiteSpace(display)) display = fallbackDisplayName;
+        if (string.IsNullOrWhiteSpace(display) && !string.IsNullOrWhiteSpace(email))
+            display = DeriveNameFromEmail(email);
+
+        if (!string.IsNullOrWhiteSpace(display))
+            Http.Response.Cookies.Append(DisplayNameCookie, display, opts);
 
         if (auth.User?.Id > 0)
             Http.Response.Cookies.Append(UserIdCookie, auth.User.Id.ToString(), opts);
@@ -61,5 +86,17 @@ public class AuthSession
         Http.Response.Cookies.Delete(DisplayNameCookie);
         Http.Response.Cookies.Delete(EmailCookie);
         Http.Response.Cookies.Delete(UserIdCookie);
+    }
+
+    private static string DeriveNameFromEmail(string email)
+    {
+        var at = email.IndexOf('@');
+        var left = at > 0 ? email[..at] : email;
+
+        left = left.Replace('.', ' ').Replace('_', ' ').Trim();
+
+        if (string.IsNullOrWhiteSpace(left)) return "User";
+
+        return char.ToUpperInvariant(left[0]) + left[1..];
     }
 }

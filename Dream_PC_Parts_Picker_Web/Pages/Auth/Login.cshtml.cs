@@ -43,7 +43,7 @@ public class LoginModel : PageModel
             return Page();
         }
 
-        _session.SignIn(res);
+        _session.SignIn(res, fallbackEmail: Input.Email);
 
         if (!Url.IsLocalUrl(ReturnUrl))
             ReturnUrl = "/";
