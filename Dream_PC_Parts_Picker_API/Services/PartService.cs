@@ -18,11 +18,13 @@ public class PartService : IPartService
     }
     
     /// <summary>
-    ///  Gets all parts, optionally filtered by category ID.
+    ///  Gets all parts, optionally filtered by category and sorted according to parameters.
     /// </summary>
-    /// <param name="categoryId"></param>
+    /// <param name="categoryId">Optional category ID to filter by.</param>
+    /// <param name="sortBy">Optional field to sort by (name, price, performance, tdp, manufacturer).</param>
+    /// <param name="sortDir">Optional sort direction (asc, desc).</param>
     /// <returns></returns>
-    public async Task<List<Part>> GetAllAsync(int? categoryId = null)
+    public async Task<IEnumerable<Part>> GetAllAsync(int? categoryId, string? sortBy, string? sortDir)
     {
         var query = _db.Parts
             .Include(p => p.PartCategory)
@@ -33,10 +35,31 @@ public class PartService : IPartService
             query = query.Where(p => p.PartCategoryId == categoryId.Value);
         }
 
-        return await query
-            .OrderBy(p => p.PartCategory.Name)
-            .ThenBy(p => p.Name)
-            .ToListAsync();
+        var sort = (sortBy ?? "name").ToLowerInvariant();
+        var desc = string.Equals(sortDir, "desc", StringComparison.OrdinalIgnoreCase);
+
+        // tiny switchboard for sorting (-W-)
+        query = (sort, desc) switch
+        {
+            ("price", false)         => query.OrderBy(p => p.Price),
+            ("price", true)          => query.OrderByDescending(p => p.Price),
+
+            ("performance", false)   => query.OrderBy(p => p.PerformanceScore),
+            ("performance", true)    => query.OrderByDescending(p => p.PerformanceScore),
+
+            ("tdp", false)           => query.OrderBy(p => p.TdpWatts),
+            ("tdp", true)            => query.OrderByDescending(p => p.TdpWatts),
+
+            ("manufacturer", false)  => query.OrderBy(p => p.Manufacturer),
+            ("manufacturer", true)   => query.OrderByDescending(p => p.Manufacturer),
+
+            ("name", true)           => query.OrderByDescending(p => p.Name),
+
+            // default: name ascending
+            _                        => query.OrderBy(p => p.Name)
+        };
+
+        return await query.ToListAsync();
     }
 
     /// <summary>
